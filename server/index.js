@@ -25,6 +25,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/places', placeRoutes);
 
+// Root route for health check
+app.get('/', (req, res) => {
+  res.json({ message: 'Travel Planner API is running!', version: '1.0.0' });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/travelapp')
   .then(() => {
