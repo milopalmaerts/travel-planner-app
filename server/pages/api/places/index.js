@@ -1,13 +1,20 @@
-import Place from '../../../models/Place';
-import connectToDatabase from '../../../lib/mongodb';
+import { db } from '../../../lib/firebase';
 
 export default async function handler(req, res) {
-  await connectToDatabase();
-
   switch (req.method) {
     case 'GET':
       try {
-        const places = await Place.find({ user: req.query.userId });
+        const placesRef = db.collection('places');
+        const snapshot = await placesRef.get();
+        
+        const places = [];
+        snapshot.forEach(doc => {
+          places.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        
         res.status(200).json(places);
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -16,9 +23,28 @@ export default async function handler(req, res) {
 
     case 'POST':
       try {
-        const place = new Place(req.body);
-        await place.save();
-        res.status(201).json(place);
+        const { name, category, description, country, city, latitude, longitude, userId } = req.body;
+        
+        const newPlace = {
+          name,
+          category,
+          description,
+          country,
+          city,
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
+          userId,
+          createdAt: new Date().toISOString(),
+          visited: false,
+          favorite: false
+        };
+        
+        const docRef = await db.collection('places').add(newPlace);
+        
+        res.status(201).json({
+          id: docRef.id,
+          ...newPlace
+        });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
