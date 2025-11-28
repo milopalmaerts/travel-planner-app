@@ -16,12 +16,20 @@ export default function Toevoegen() {
     country: '',
     description: '',
     isPublic: true,
+    photo: null,
   });
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   const categories = [
     { id: 'restaurant', label: 'Restaurant', icon: '🍽️' },
     { id: 'cafe', label: 'Café', icon: '☕' },
     { id: 'viewpoint', label: 'Viewpoint', icon: '👁️' },
+    { id: 'shopping', label: 'Shopping', icon: '🛍️' },
+    { id: 'museum', label: 'Museum', icon: '🏛️' },
+    { id: 'park', label: 'Park', icon: '🌳' },
+    { id: 'hotel', label: 'Hotel', icon: '🏨' },
+    { id: 'nightlife', label: 'Nachtleven', icon: '🎉' },
+    { id: 'beach', label: 'Strand', icon: '🏖️' },
   ];
 
   const handleChange = (e) => {
@@ -30,6 +38,21 @@ export default function Toevoegen() {
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
     });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+        setFormData({
+          ...formData,
+          photo: reader.result,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -46,9 +69,22 @@ export default function Toevoegen() {
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.photoUpload}>
-          <span className={styles.photoPlaceholder}>📷</span>
-          <p>Foto toevoegen (optioneel)</p>
+        <div className={styles.photoUpload} onClick={() => document.getElementById('photoInput').click()}>
+          {photoPreview ? (
+            <img src={photoPreview} alt="Preview" className={styles.photoPreviewImg} />
+          ) : (
+            <>
+              <span className={styles.photoPlaceholder}>📷</span>
+              <p>Foto toevoegen (optioneel)</p>
+            </>
+          )}
+          <input
+            id="photoInput"
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            style={{ display: 'none' }}
+          />
         </div>
 
         <div className={styles.formGroup}>

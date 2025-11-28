@@ -104,10 +104,19 @@
   justify-content: space-between;
   align-items: flex-start;
   transition: background 0.2s;
+  gap: 12px;
 }
 
 .placeHeader:hover {
   background: #f8f9fa;
+}
+
+.placePhoto {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .placeStatus {
@@ -256,4 +265,34 @@
 .categoryTag.viewpoint {
   background: #e8f5e9;
   color: #2e7d32;
+}
+
+.categoryTag.shopping {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.categoryTag.museum {
+  background: #fff9c4;
+  color: #f57f17;
+}
+
+.categoryTag.park {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.categoryTag.hotel {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.categoryTag.nightlife {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.categoryTag.beach {
+  background: #e0f7fa;
+  color: #00838f;
 }

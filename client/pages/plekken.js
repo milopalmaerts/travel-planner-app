@@ -14,6 +14,12 @@ export default function Plekken() {
     { id: 'restaurant', label: 'Restaurant', icon: '🍽️' },
     { id: 'cafe', label: 'Café', icon: '☕' },
     { id: 'viewpoint', label: 'Viewpoint', icon: '👁️' },
+    { id: 'shopping', label: 'Shopping', icon: '🛍️' },
+    { id: 'museum', label: 'Museum', icon: '🏛️' },
+    { id: 'park', label: 'Park', icon: '🌳' },
+    { id: 'hotel', label: 'Hotel', icon: '🏨' },
+    { id: 'nightlife', label: 'Nachtleven', icon: '🎉' },
+    { id: 'beach', label: 'Strand', icon: '🏖️' },
   ];
 
   const getCategoryIcon = (category) => {
@@ -21,6 +27,12 @@ export default function Plekken() {
       restaurant: '🍽️',
       cafe: '☕',
       viewpoint: '👁️',
+      shopping: '🛍️',
+      museum: '🏛️',
+      park: '🌳',
+      hotel: '🏨',
+      nightlife: '🎉',
+      beach: '🏖️',
     };
     return icons[category] || '📍';
   };
@@ -30,6 +42,12 @@ export default function Plekken() {
       restaurant: 'Restaurant',
       cafe: 'Café',
       viewpoint: 'Viewpoint',
+      shopping: 'Shopping',
+      museum: 'Museum',
+      park: 'Park',
+      hotel: 'Hotel',
+      nightlife: 'Nachtleven',
+      beach: 'Strand',
     };
     return labels[category] || category;
   };
@@ -109,6 +127,9 @@ export default function Plekken() {
                       className={styles.placeHeader}
                       onClick={() => setExpandedPlace(expandedPlace === place.id ? null : place.id)}
                     >
+                      {place.photo && (
+                        <img src={place.photo} alt={place.name} className={styles.placePhoto} />
+                      )}
                       <div className={styles.placeInfo}>
                         <h3 className={styles.placeName}>{place.name}</h3>
                         <p className={styles.placeLocation}>{place.city}</p>

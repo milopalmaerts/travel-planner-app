@@ -22,6 +22,12 @@ export default function Map() {
     else if (category === 'restaurant') color = '#ff6f00';
     else if (category === 'cafe') color = '#7b1fa2';
     else if (category === 'viewpoint') color = '#2e7d32';
+    else if (category === 'shopping') color = '#1976d2';
+    else if (category === 'museum') color = '#f57f17';
+    else if (category === 'park') color = '#2e7d32';
+    else if (category === 'hotel') color = '#c2185b';
+    else if (category === 'nightlife') color = '#6a1b9a';
+    else if (category === 'beach') color = '#00838f';
 
     return L.divIcon({
       className: 'custom-marker',
@@ -31,16 +37,49 @@ export default function Map() {
     });
   };
 
-  // Simple geocoding - in production, use a real geocoding API
+  // Geocoding using address - in production, use Google Maps Geocoding API or Nominatim
   const getCoordinates = (place) => {
-    // Default coordinates based on city name (very simplified)
+    // Try to use full address if available
+    const fullAddress = `${place.address || ''}, ${place.city}, ${place.country}`.toLowerCase();
+    
+    // Specific address coordinates (you can add more as needed)
+    const addressCoords = {
+      'flanelstraat': [51.0693, 3.6803],
+      'flanelstraat 29': [51.0693, 3.6803],
+      'flanelstraat mariakerke': [51.0693, 3.6803],
+      'grote markt antwerpen': [51.2194, 4.4025],
+      'grand place brussels': [50.8467, 4.3525],
+      'eiffel tower paris': [48.8584, 2.2945],
+      'brandenburger tor berlin': [52.5163, 13.3777],
+    };
+    
+    // Check if we have specific address coordinates
+    for (const [addr, coords] of Object.entries(addressCoords)) {
+      if (fullAddress.includes(addr)) {
+        return coords;
+      }
+    }
+    
+    // Default coordinates based on city name
     const cityCoords = {
       'mariakerke': [51.0693, 3.6803],
+      'gent': [51.0543, 3.7174],
+      'antwerpen': [51.2194, 4.4025],
+      'brussel': [50.8503, 4.3517],
       'berlin': [52.5200, 13.4050],
       'paris': [48.8566, 2.3522],
       'amsterdam': [52.3676, 4.9041],
       'london': [51.5074, -0.1278],
       'rome': [41.9028, 12.4964],
+      'barcelona': [41.3851, 2.1734],
+      'madrid': [40.4168, -3.7038],
+      'lissabon': [38.7223, -9.1393],
+      'wenen': [48.2082, 16.3738],
+      'praag': [50.0755, 14.4378],
+      'boedapest': [47.4979, 19.0402],
+      'kopenhagen': [55.6761, 12.5683],
+      'stockholm': [59.3293, 18.0686],
+      'oslo': [59.9139, 10.7522],
     };
     
     const cityLower = place.city.toLowerCase();
@@ -67,6 +106,19 @@ export default function Map() {
           >
             <Popup>
               <div style={{ minWidth: '200px' }}>
+                {place.photo && (
+                  <img 
+                    src={place.photo} 
+                    alt={place.name} 
+                    style={{ 
+                      width: '100%', 
+                      height: '120px', 
+                      objectFit: 'cover', 
+                      borderRadius: '8px', 
+                      marginBottom: '8px' 
+                    }} 
+                  />
+                )}
                 <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>{place.name}</h3>
                 <p style={{ margin: '4px 0', fontSize: '14px', color: '#666' }}>
                   {place.city}, {place.country}
