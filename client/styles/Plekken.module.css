@@ -92,9 +92,133 @@
 .placeCard {
   background: white;
   border-radius: 12px;
-  padding: 16px;
   margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.placeHeader {
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: background 0.2s;
+}
+
+.placeHeader:hover {
+  background: #f8f9fa;
+}
+
+.placeStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusBadge {
+  font-size: 18px;
+}
+
+.expandIcon {
+  font-size: 14px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.placeDetails {
+  padding: 0 16px 16px 16px;
+  border-top: 1px solid #f0f0f0;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.placeDetails p {
+  margin: 12px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.placeDetails strong {
+  color: #333;
+}
+
+.actionButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.actionBtn {
+  flex: 1;
+  min-width: 140px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.actionBtn:hover {
+  background: #f8f9fa;
+  border-color: #17a2b8;
+  color: #17a2b8;
+}
+
+.actionBtn.active {
+  background: #e8f5f7;
+  border-color: #17a2b8;
+  color: #17a2b8;
+}
+
+.actionBtn.deleteBtn {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.actionBtn.deleteBtn:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.emptyState p:first-child {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.emptyState h3 {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.emptyState p:last-child {
+  font-size: 14px;
 }
 
 .placeInfo h3 {
@@ -117,4 +241,19 @@
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
+}
+
+.categoryTag.restaurant {
+  background: #fff3e0;
+  color: #ff6f00;
+}
+
+.categoryTag.cafe {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.categoryTag.viewpoint {
+  background: #e8f5e9;
+  color: #2e7d32;
 }

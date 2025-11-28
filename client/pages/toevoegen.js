@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import BottomNav from '../components/BottomNav';
+import { usePlaces } from '../contexts/PlacesContext';
 import styles from '../styles/Toevoegen.module.css';
 
 export default function Toevoegen() {
+  const router = useRouter();
+  const { addPlace } = usePlaces();
   const [formData, setFormData] = useState({
     name: '',
     category: 'restaurant',
@@ -30,8 +34,9 @@ export default function Toevoegen() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data:', formData);
+    addPlace(formData);
     alert('Plek opgeslagen!');
+    router.push('/plekken');
   };
 
   return (

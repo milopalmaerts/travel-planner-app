@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { usePlaces } from '../contexts/PlacesContext';
 import styles from '../styles/Auth.module.css';
 
 export default function Register() {
   const router = useRouter();
+  const { login } = usePlaces();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -24,8 +26,10 @@ export default function Register() {
       alert('Wachtwoorden komen niet overeen');
       return;
     }
-    console.log('Register:', formData);
-    // Simulate registration
+    login({
+      email: formData.email,
+      username: formData.username,
+    });
     router.push('/kaart');
   };
 

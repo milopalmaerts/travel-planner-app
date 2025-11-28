@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { usePlaces } from '../contexts/PlacesContext';
 import styles from '../styles/Auth.module.css';
 
 export default function Login() {
   const router = useRouter();
+  const { login } = usePlaces();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,8 +20,10 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login:', formData);
-    // Simulate login
+    login({
+      email: formData.email,
+      username: formData.email.split('@')[0],
+    });
     router.push('/kaart');
   };
 

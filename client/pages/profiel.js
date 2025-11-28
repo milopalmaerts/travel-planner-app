@@ -1,16 +1,27 @@
 import { useRouter } from 'next/router';
 import BottomNav from '../components/BottomNav';
+import { usePlaces } from '../contexts/PlacesContext';
 import styles from '../styles/Profiel.module.css';
 
 export default function Profiel() {
   const router = useRouter();
+  const { places, user, logout } = usePlaces();
+
+  const visitedCount = places.filter(p => p.visited).length;
+  const favoritesCount = places.filter(p => p.favorite).length;
+  const countriesCount = new Set(places.map(p => p.country)).size;
 
   const stats = [
-    { label: 'Plekken', value: 1, color: '#17a2b8' },
-    { label: 'Bezocht', value: 0, color: '#28a745' },
-    { label: 'Favorieten', value: 0, color: '#dc3545' },
-    { label: 'Landen', value: 1, color: '#007bff' },
+    { label: 'Plekken', value: places.length, color: '#17a2b8' },
+    { label: 'Bezocht', value: visitedCount, color: '#28a745' },
+    { label: 'Favorieten', value: favoritesCount, color: '#dc3545' },
+    { label: 'Landen', value: countriesCount, color: '#007bff' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <div className={styles.container}>
@@ -71,7 +82,7 @@ export default function Profiel() {
           
           <button 
             className={styles.logoutBtn}
-            onClick={() => router.push('/login')}
+            onClick={handleLogout}
           >
             <span className={styles.logoutIcon}>🚪</span>
             <span>Uitloggen</span>
