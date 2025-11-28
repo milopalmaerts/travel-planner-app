@@ -1,0 +1,109 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import styles from '../styles/Auth.module.css';
+
+export default function Register() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      alert('Wachtwoorden komen niet overeen');
+      return;
+    }
+    console.log('Register:', formData);
+    // Simulate registration
+    router.push('/kaart');
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.logoSection}>
+          <div className={styles.logo}>✈️</div>
+          <h1>Travel Planner</h1>
+          <p>Maak een account en start je reis</p>
+        </div>
+
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.formGroup}>
+            <label>Gebruikersnaam</label>
+            <input
+              type="text"
+              name="username"
+              placeholder="jouw_naam"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="jouw@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Wachtwoord</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Bevestig wachtwoord</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="••••••••"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className={styles.submitBtn}>
+            Registreren
+          </button>
+        </form>
+
+        <div className={styles.footer}>
+          <p>
+            Heb je al een account?{' '}
+            <button
+              onClick={() => router.push('/login')}
+              className={styles.link}
+            >
+              Inloggen
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,165 @@
+import { useState } from 'react';
+import BottomNav from '../components/BottomNav';
+import styles from '../styles/Toevoegen.module.css';
+
+export default function Toevoegen() {
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'restaurant',
+    address: '',
+    postcode: '',
+    city: '',
+    country: '',
+    description: '',
+    isPublic: true,
+  });
+
+  const categories = [
+    { id: 'restaurant', label: 'Restaurant', icon: '🍽️' },
+    { id: 'cafe', label: 'Café', icon: '☕' },
+    { id: 'viewpoint', label: 'Viewpoint', icon: '👁️' },
+  ];
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form data:', formData);
+    alert('Plek opgeslagen!');
+  };
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Toevoegen</h1>
+      </header>
+
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <div className={styles.photoUpload}>
+          <span className={styles.photoPlaceholder}>📷</span>
+          <p>Foto toevoegen (optioneel)</p>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>Naam van de plek *</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="bijv. Eiffeltoren"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>Categorie *</label>
+          <div className={styles.categoryGrid}>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`${styles.categoryOption} ${
+                  formData.category === cat.id ? styles.selected : ''
+                }`}
+                onClick={() => setFormData({ ...formData, category: cat.id })}
+              >
+                <span className={styles.categoryIcon}>{cat.icon}</span>
+                <span>{cat.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>Adres</label>
+          <input
+            type="text"
+            name="address"
+            placeholder="Straat en huisnummer"
+            value={formData.address}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className={styles.formRow}>
+          <div className={styles.formGroup}>
+            <label>Postcode</label>
+            <input
+              type="text"
+              name="postcode"
+              placeholder="Postcode"
+              value={formData.postcode}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Stad *</label>
+            <input
+              type="text"
+              name="city"
+              placeholder="Stad"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>Land *</label>
+          <input
+            type="text"
+            name="country"
+            placeholder="bijv. Frankrijk"
+            value={formData.country}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>Beschrijving</label>
+          <textarea
+            name="description"
+            placeholder="Voeg notities toe over deze plek..."
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+          />
+        </div>
+
+        <div className={styles.publicToggle}>
+          <div className={styles.toggleInfo}>
+            <span className={styles.toggleIcon}>🌐</span>
+            <div>
+              <strong>Publiek</strong>
+              <p>Andere gebruikers kunnen deze plek zien</p>
+            </div>
+          </div>
+          <label className={styles.switch}>
+            <input
+              type="checkbox"
+              name="isPublic"
+              checked={formData.isPublic}
+              onChange={handleChange}
+            />
+            <span className={styles.slider}></span>
+          </label>
+        </div>
+
+        <button type="submit" className={styles.submitBtn}>
+          Plek opslaan
+        </button>
+      </form>
+
+      <BottomNav active="toevoegen" />
+    </div>
+  );
+}

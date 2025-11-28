@@ -5,9 +5,7 @@ export default function Home() {
   const router = useRouter();
   
   const handleClick = () => {
-    // Voor nu sturen we de gebruiker naar een demo pagina
-    // Later kun je dit aanpassen naar de echte login of dashboard pagina
-    router.push('/dashboard');
+    router.push('/login');
   };
   
   return (
