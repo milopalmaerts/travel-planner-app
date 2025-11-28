@@ -1,14 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-export default function Home() {
+export default function Dashboard() {
   const router = useRouter();
-  
-  const handleClick = () => {
-    // Voor nu sturen we de gebruiker naar een demo pagina
-    // Later kun je dit aanpassen naar de echte login of dashboard pagina
-    router.push('/dashboard');
-  };
   
   return (
     <div style={{ 
@@ -20,13 +14,13 @@ export default function Home() {
       backgroundColor: '#f5f5f5',
       fontFamily: 'Arial, sans-serif'
     }}>
-      <h1>Travel Planner App</h1>
-      <p>Welcome to your travel planning application!</p>
+      <h1>Dashboard</h1>
+      <p>Welcome to your Travel Planner Dashboard!</p>
       <div style={{ marginTop: '20px' }}>
         <button 
-          onClick={handleClick}
+          onClick={() => router.push('/')}
           style={{
-            backgroundColor: '#4CAF50',
+            backgroundColor: '#2196F3',
             border: 'none',
             color: 'white',
             padding: '15px 32px',
@@ -39,7 +33,7 @@ export default function Home() {
             borderRadius: '8px'
           }}
         >
-          Get Started
+          Back to Home
         </button>
       </div>
     </div>
