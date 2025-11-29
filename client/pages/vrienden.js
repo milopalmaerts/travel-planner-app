@@ -8,9 +8,25 @@ export default function Vrienden() {
   const router = useRouter();
   const { friends, demoUsers, addFriend, removeFriend } = usePlaces();
   const [activeTab, setActiveTab] = useState('ontdekken');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const myFriendsList = demoUsers.filter(user => friends.includes(user.id));
   const discoverList = demoUsers.filter(user => !friends.includes(user.id));
+
+  // Filter based on search query
+  const filterUsers = (users) => {
+    if (!searchQuery.trim()) return users;
+    
+    const query = searchQuery.toLowerCase();
+    return users.filter(user => 
+      user.username.toLowerCase().includes(query) ||
+      (user.bio && user.bio.toLowerCase().includes(query)) ||
+      (user.email && user.email.toLowerCase().includes(query))
+    );
+  };
+
+  const filteredFriends = filterUsers(myFriendsList);
+  const filteredDiscover = filterUsers(discoverList);
 
   const FriendCard = ({ user, isFriend }) => {
     const placeCount = user.places?.length || 0;
@@ -66,6 +82,27 @@ export default function Vrienden() {
       </header>
 
       <div className={styles.content}>
+        <div style={{ marginBottom: '16px' }}>
+          <input
+            type="text"
+            placeholder="🔍 Zoek vrienden..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              fontSize: '15px',
+              border: '2px solid #e0e0e0',
+              borderRadius: '12px',
+              outline: 'none',
+              transition: 'all 0.3s',
+              background: 'white',
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#17a2b8'}
+            onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+          />
+        </div>
+
         <div className={styles.tabs}>
           <button 
             className={`${styles.tab} ${activeTab === 'vrienden' ? styles.active : ''}`}
@@ -83,14 +120,24 @@ export default function Vrienden() {
 
         {activeTab === 'vrienden' && (
           <>
-            {myFriendsList.length === 0 ? (
+            {filteredFriends.length === 0 ? (
               <div className={styles.emptyState}>
-                <p>👥</p>
-                <h3>Nog geen vrienden</h3>
-                <p>Ga naar "Ontdekken" om vrienden toe te voegen!</p>
+                {searchQuery ? (
+                  <>
+                    <p>🔍</p>
+                    <h3>Geen resultaten</h3>
+                    <p>Geen vrienden gevonden met "{searchQuery}"</p>
+                  </>
+                ) : (
+                  <>
+                    <p>👥</p>
+                    <h3>Nog geen vrienden</h3>
+                    <p>Ga naar "Ontdekken" om vrienden toe te voegen!</p>
+                  </>
+                )}
               </div>
             ) : (
-              myFriendsList.map(user => (
+              filteredFriends.map(user => (
                 <FriendCard key={user.id} user={user} isFriend={true} />
               ))
             )}
@@ -99,14 +146,24 @@ export default function Vrienden() {
 
         {activeTab === 'ontdekken' && (
           <>
-            {discoverList.length === 0 ? (
+            {filteredDiscover.length === 0 ? (
               <div className={styles.emptyState}>
-                <p>🎉</p>
-                <h3>Je bent vrienden met iedereen!</h3>
-                <p>Er zijn geen nieuwe gebruikers om te ontdekken.</p>
+                {searchQuery ? (
+                  <>
+                    <p>🔍</p>
+                    <h3>Geen resultaten</h3>
+                    <p>Geen gebruikers gevonden met "{searchQuery}"</p>
+                  </>
+                ) : discoverList.length === 0 ? (
+                  <>
+                    <p>🎉</p>
+                    <h3>Je bent vrienden met iedereen!</h3>
+                    <p>Er zijn geen nieuwe gebruikers om te ontdekken.</p>
+                  </>
+                ) : null}
               </div>
             ) : (
-              discoverList.map(user => (
+              filteredDiscover.map(user => (
                 <FriendCard key={user.id} user={user} isFriend={false} />
               ))
             )}
