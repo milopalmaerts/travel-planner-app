@@ -1,11 +1,12 @@
 import '../styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 import '../styles/theme.css'
-import { PlacesProvider } from '../contexts/PlacesContext'
+import { PlacesProvider, usePlaces } from '../contexts/PlacesContext'
 import { useEffect, useState } from 'react'
 
-export default function App({ Component, pageProps }) {
+function AppContent({ Component, pageProps }) {
   const [theme, setTheme] = useState('light')
+  const { loading } = usePlaces()
 
   useEffect(() => {
     // Check for saved theme or system preference
@@ -28,8 +29,24 @@ export default function App({ Component, pageProps }) {
     localStorage.setItem('theme', newTheme)
   }
 
+  // Show loading screen while checking auth state
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        backgroundColor: 'var(--bg-primary)',
+        color: 'var(--text-primary)'
+      }}>
+        <div>Laden...</div>
+      </div>
+    )
+  }
+
   return (
-    <PlacesProvider>
+    <>
       {!Component.authPage && (
         <button 
           className="theme-toggle"
@@ -40,6 +57,14 @@ export default function App({ Component, pageProps }) {
         </button>
       )}
       <Component {...pageProps} />
+    </>
+  )
+}
+
+export default function App(props) {
+  return (
+    <PlacesProvider>
+      <AppContent {...props} />
     </PlacesProvider>
   )
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { usePlaces } from '../contexts/PlacesContext';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 import styles from '../styles/Auth.module.css';
 
 export default function Login() {
@@ -10,6 +12,8 @@ export default function Login() {
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -18,13 +22,25 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login({
-      email: formData.email,
-      username: formData.email.split('@')[0],
-    });
-    router.push('/kaart');
+    setLoading(true);
+    setError('');
+    
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      
+      // Redirect to map page after successful login
+      router.push('/kaart');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.message || 'Er ging iets mis bij het inloggen');
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,6 +62,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
 
@@ -58,11 +75,22 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
+          
+          {error && (
+            <div style={{ color: 'var(--error)', textAlign: 'center', marginBottom: '16px' }}>
+              {error}
+            </div>
+          )}
 
-          <button type="submit" className={styles.submitBtn}>
-            Inloggen
+          <button 
+            type="submit" 
+            className={styles.submitBtn}
+            disabled={loading}
+          >
+            {loading ? 'Inloggen...' : 'Inloggen'}
           </button>
         </form>
 

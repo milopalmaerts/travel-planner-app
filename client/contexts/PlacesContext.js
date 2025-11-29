@@ -1,4 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 
 const PlacesContext = createContext();
 
@@ -7,23 +10,53 @@ export function PlacesProvider({ children }) {
   const [user, setUser] = useState(null);
   const [friends, setFriends] = useState([]);
   const [demoUsers, setDemoUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load places from localStorage on mount
+  // Handle Firebase auth state changes
   useEffect(() => {
-    const storedPlaces = localStorage.getItem('travelPlaces');
-    if (storedPlaces) {
-      setPlaces(JSON.parse(storedPlaces));
-    }
-    
-    const storedUser = localStorage.getItem('travelUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        try {
+          // Get user data from Firestore
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          let userData = {
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Traveler',
+          };
 
-    const storedFriends = localStorage.getItem('travelFriends');
-    if (storedFriends) {
-      setFriends(JSON.parse(storedFriends));
-    }
+          if (userDoc.exists()) {
+            userData = { ...userData, ...userDoc.data() };
+          } else {
+            // Create new user document
+            await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+          }
+
+          setUser(userData);
+          
+          // Load user's places
+          const placesDoc = await getDoc(doc(db, 'places', firebaseUser.uid));
+          if (placesDoc.exists()) {
+            setPlaces(placesDoc.data().places || []);
+          }
+          
+          // Load user's friends
+          const friendsDoc = await getDoc(doc(db, 'friends', firebaseUser.uid));
+          if (friendsDoc.exists()) {
+            setFriends(friendsDoc.data().friends || []);
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
+      } else {
+        // User is signed out
+        setUser(null);
+        setPlaces([]);
+        setFriends([]);
+      }
+      setLoading(false);
+    });
 
     // Initialize demo users with Eva
     const storedDemoUsers = localStorage.getItem('travelDemoUsers');
@@ -130,16 +163,25 @@ export function PlacesProvider({ children }) {
       setDemoUsers([{ ...eva, places: evaPlaces }]);
       localStorage.setItem('travelDemoUsers', JSON.stringify([{ ...eva, places: evaPlaces }]));
     }
+
+    return () => unsubscribe();
   }, []);
 
-  // Save places to localStorage whenever they change
+  // Save places to Firestore whenever they change
   useEffect(() => {
-    if (places.length > 0) {
-      localStorage.setItem('travelPlaces', JSON.stringify(places));
+    if (user && places.length > 0) {
+      const savePlaces = async () => {
+        try {
+          await setDoc(doc(db, 'places', user.id), { places });
+        } catch (error) {
+          console.error('Error saving places:', error);
+        }
+      };
+      savePlaces();
     }
-  }, [places]);
+  }, [places, user]);
 
-  const addPlace = (place) => {
+  const addPlace = async (place) => {
     const newPlace = {
       ...place,
       id: Date.now().toString(),
@@ -147,55 +189,131 @@ export function PlacesProvider({ children }) {
       visited: false,
       favorite: false,
     };
-    setPlaces([...places, newPlace]);
+    
+    const updatedPlaces = [...places, newPlace];
+    setPlaces(updatedPlaces);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'places', user.id), { places: updatedPlaces });
+      } catch (error) {
+        console.error('Error saving place:', error);
+      }
+    }
+    
     return newPlace;
   };
 
-  const updatePlace = (id, updates) => {
-    setPlaces(places.map(place => 
+  const updatePlace = async (id, updates) => {
+    const updatedPlaces = places.map(place => 
       place.id === id ? { ...place, ...updates } : place
-    ));
-  };
-
-  const deletePlace = (id) => {
-    setPlaces(places.filter(place => place.id !== id));
-  };
-
-  const toggleVisited = (id) => {
-    setPlaces(places.map(place =>
-      place.id === id ? { ...place, visited: !place.visited } : place
-    ));
-  };
-
-  const toggleFavorite = (id) => {
-    setPlaces(places.map(place =>
-      place.id === id ? { ...place, favorite: !place.favorite } : place
-    ));
-  };
-
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('travelUser', JSON.stringify(userData));
-  };
-
-  const updateUserProfile = (updates) => {
-    const updatedUser = { ...user, ...updates };
-    setUser(updatedUser);
-    localStorage.setItem('travelUser', JSON.stringify(updatedUser));
-  };
-
-  const addFriend = (friendId) => {
-    if (!friends.includes(friendId)) {
-      const newFriends = [...friends, friendId];
-      setFriends(newFriends);
-      localStorage.setItem('travelFriends', JSON.stringify(newFriends));
+    );
+    setPlaces(updatedPlaces);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'places', user.id), { places: updatedPlaces });
+      } catch (error) {
+        console.error('Error updating place:', error);
+      }
     }
   };
 
-  const removeFriend = (friendId) => {
+  const deletePlace = async (id) => {
+    const updatedPlaces = places.filter(place => place.id !== id);
+    setPlaces(updatedPlaces);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'places', user.id), { places: updatedPlaces });
+      } catch (error) {
+        console.error('Error deleting place:', error);
+      }
+    }
+  };
+
+  const toggleVisited = async (id) => {
+    const updatedPlaces = places.map(place =>
+      place.id === id ? { ...place, visited: !place.visited } : place
+    );
+    setPlaces(updatedPlaces);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'places', user.id), { places: updatedPlaces });
+      } catch (error) {
+        console.error('Error toggling visited:', error);
+      }
+    }
+  };
+
+  const toggleFavorite = async (id) => {
+    const updatedPlaces = places.map(place =>
+      place.id === id ? { ...place, favorite: !place.favorite } : place
+    );
+    setPlaces(updatedPlaces);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'places', user.id), { places: updatedPlaces });
+      } catch (error) {
+        console.error('Error toggling favorite:', error);
+      }
+    }
+  };
+
+  const login = async (userData) => {
+    setUser(userData);
+    // Note: Actual Firebase login should be handled in login/register pages
+  };
+
+  const updateUserProfile = async (updates) => {
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'users', user.id), updatedUser);
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
+    }
+  };
+
+  const addFriend = async (friendId) => {
+    if (!friends.includes(friendId)) {
+      const newFriends = [...friends, friendId];
+      setFriends(newFriends);
+      
+      // Save to Firestore
+      if (user) {
+        try {
+          await setDoc(doc(db, 'friends', user.id), { friends: newFriends });
+        } catch (error) {
+          console.error('Error adding friend:', error);
+        }
+      }
+    }
+  };
+
+  const removeFriend = async (friendId) => {
     const newFriends = friends.filter(id => id !== friendId);
     setFriends(newFriends);
-    localStorage.setItem('travelFriends', JSON.stringify(newFriends));
+    
+    // Save to Firestore
+    if (user) {
+      try {
+        await setDoc(doc(db, 'friends', user.id), { friends: newFriends });
+      } catch (error) {
+        console.error('Error removing friend:', error);
+      }
+    }
   };
 
   const toggleLikePlace = (placeId, userId) => {
@@ -226,9 +344,15 @@ export function PlacesProvider({ children }) {
     localStorage.setItem('travelDemoUsers', JSON.stringify(updatedDemoUsers));
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('travelUser');
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setPlaces([]);
+      setFriends([]);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
@@ -237,6 +361,7 @@ export function PlacesProvider({ children }) {
       user,
       friends,
       demoUsers,
+      loading,
       addPlace,
       updatePlace,
       deletePlace,
