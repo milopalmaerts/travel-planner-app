@@ -1,13 +1,20 @@
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { usePlaces } from '../../contexts/PlacesContext';
 import BottomNav from '../../components/BottomNav';
 import styles from '../../styles/Profiel.module.css';
 import plekkenStyles from '../../styles/Plekken.module.css';
 
+const FriendMap = dynamic(() => import('../../components/FriendMap'), {
+  ssr: false,
+});
+
 export default function VriendProfiel() {
   const router = useRouter();
   const { id } = router.query;
   const { demoUsers, toggleLikePlace, user } = usePlaces();
+  const [activeTab, setActiveTab] = useState('plekken');
 
   const friend = demoUsers.find(u => u.id === id);
 
@@ -139,7 +146,60 @@ export default function VriendProfiel() {
           ))}
         </div>
 
-        <div className={plekkenStyles.placesList} style={{ padding: '0 16px' }}>
+        <div style={{ padding: '0 16px', marginBottom: '16px' }}>
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            background: 'white',
+            borderRadius: '12px',
+            padding: '6px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          }}>
+            <button 
+              onClick={() => setActiveTab('plekken')}
+              style={{
+                flex: 1,
+                background: activeTab === 'plekken' ? '#17a2b8' : 'transparent',
+                color: activeTab === 'plekken' ? 'white' : '#666',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+            >
+              📋 Plekken
+            </button>
+            <button 
+              onClick={() => setActiveTab('kaart')}
+              style={{
+                flex: 1,
+                background: activeTab === 'kaart' ? '#17a2b8' : 'transparent',
+                color: activeTab === 'kaart' ? 'white' : '#666',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+            >
+              🗺️ Kaart
+            </button>
+          </div>
+        </div>
+
+        {activeTab === 'kaart' && (
+          <div style={{ height: 'calc(100vh - 380px)', minHeight: '400px', margin: '0 16px', borderRadius: '12px', overflow: 'hidden' }}>
+            <FriendMap places={places} friendName={friend.username} />
+          </div>
+        )}
+
+        {activeTab === 'plekken' && (
+          <div className={plekkenStyles.placesList} style={{ padding: '0 16px' }}>
           <h2 className={plekkenStyles.countryTitle} style={{ marginTop: '24px' }}>
             📍 {friend.username}'s Plekken
           </h2>
@@ -208,6 +268,7 @@ export default function VriendProfiel() {
             </div>
           ))}
         </div>
+        )}
       </div>
 
       <BottomNav active="vrienden" />
