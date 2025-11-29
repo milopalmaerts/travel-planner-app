@@ -7,6 +7,7 @@ export default function BottomNav({ active }) {
   const navItems = [
     { id: 'kaart', label: 'Kaart', icon: '🗺️', path: '/kaart' },
     { id: 'plekken', label: 'Plekken', icon: '📋', path: '/plekken' },
+    { id: 'vrienden', label: 'Vrienden', icon: '👥', path: '/vrienden' },
     { id: 'toevoegen', label: 'Toevoegen', icon: '➕', path: '/toevoegen' },
     { id: 'profiel', label: 'Profiel', icon: '👤', path: '/profiel' },
   ];
