@@ -150,6 +150,24 @@
   flex-shrink: 0;
 }
 
+.placeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.placeName {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.placeLocation {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
 .placeStatus {
   display: flex;
   align-items: center;
