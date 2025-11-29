@@ -81,3 +81,5 @@ export default function Login() {
     </div>
   );
 }
+
+Login.authPage = true;

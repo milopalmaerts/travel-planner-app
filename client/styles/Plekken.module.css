@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #F8FAFC 0%, #F1F5F9 100%);
+  background: var(--bg-primary);
   padding-bottom: 80px;
 }
 
@@ -9,11 +9,16 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 16px 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px var(--shadow-light), 0 1px 2px var(--shadow-light);
   border-bottom: 1px solid rgba(226, 232, 240, 0.5);
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+[data-theme="dark"] .header {
+  background: rgba(30, 41, 59, 0.9);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
 }
 
 .header h1 {
@@ -27,20 +32,20 @@
 }
 
 .searchBox {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 14px 18px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px var(--shadow-light), 0 2px 4px -1px var(--shadow-light);
+  border: 1px solid var(--border-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .searchBox:focus-within {
   box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.1), 0 4px 6px -2px rgba(6, 182, 212, 0.05);
-  border-color: #06B6D4;
+  border-color: var(--accent-primary);
   transform: translateY(-2px);
 }
 
@@ -74,8 +79,8 @@
 }
 
 .categoryBtn {
-  background: white;
-  border: 1px solid #E2E8F0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 50px;
   padding: 12px 24px;
   display: flex;
@@ -84,8 +89,8 @@
   white-space: nowrap;
   font-size: 15px;
   font-weight: 500;
-  color: #475569;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  box-shadow: 0 1px 3px var(--shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
@@ -116,7 +121,7 @@
 }
 
 .categoryBtn.active {
-  background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
   color: white;
   border-color: transparent;
   box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4), 0 2px 4px rgba(6, 182, 212, 0.2);
@@ -147,23 +152,23 @@
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 16px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .placeCard {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
-  border: 1px solid #F1F5F9;
+  box-shadow: 0 1px 3px var(--shadow-light), 0 1px 2px var(--shadow-light);
+  border: 1px solid var(--border-secondary);
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .placeCard:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 10px 15px -3px var(--shadow-medium), 0 4px 6px -2px var(--shadow-medium);
   transform: translateY(-4px);
-  border-color: #E2E8F0;
+  border-color: var(--border-primary);
 }
 
 .placeHeader {
@@ -177,7 +182,7 @@
 }
 
 .placeHeader:hover {
-  background: #f8f9fa;
+  background: var(--bg-hover);
 }
 
 .placePhoto {
@@ -186,7 +191,7 @@
   object-fit: cover;
   border-radius: 12px;
   flex-shrink: 0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px var(--shadow-medium);
 }
 
 @media (max-width: 768px) {
@@ -205,7 +210,7 @@
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 4px;
-  color: #0F172A;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
@@ -281,13 +286,13 @@
 .actionBtn {
   flex: 1;
   min-width: 140px;
-  background: white;
-  border: 2px solid #e0e0e0;
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
   border-radius: 8px;
   padding: 10px 16px;
   font-size: 14px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -391,7 +396,7 @@
 }
 
 .placeLocation {
-  color: #64748B;
+  color: var(--text-secondary);
   font-size: 14px;
   margin-bottom: 8px;
   font-weight: 500;

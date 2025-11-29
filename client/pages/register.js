@@ -111,3 +111,5 @@ export default function Register() {
     </div>
   );
 }
+
+Register.authPage = true;
