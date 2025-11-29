@@ -257,15 +257,15 @@
 }
 
 .logoutBtn {
-  background: white;
-  border: 1px solid #dc3545;
+  background: var(--bg-card);
+  border: 1px solid var(--error);
   border-radius: 12px;
   padding: 16px;
   width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #dc3545;
+  color: var(--error);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -282,7 +282,7 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: #dc3545;
+  background: var(--error);
   transform: translate(-50%, -50%);
   transition: width 0.4s, height 0.4s;
   z-index: 0;
@@ -295,7 +295,8 @@
 
 .logoutBtn:hover {
   color: white;
-  border-color: #dc3545;
+  border-color: var(--error);
+  transform: scale(1.02);
 }
 
 .logoutBtn > * {
@@ -309,6 +310,7 @@
 
 .logoutIcon {
   font-size: 20px;
+  color: var(--error);
 }
 
 .arrow {
