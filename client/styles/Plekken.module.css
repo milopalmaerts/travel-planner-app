@@ -36,6 +36,14 @@
 .searchIcon {
   font-size: 20px;
   margin-right: 12px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .searchIcon {
+    font-size: 18px;
+  }
 }
 
 .searchInput {
@@ -107,6 +115,14 @@
 
 .catIcon {
   font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .catIcon {
+    font-size: 16px;
+  }
 }
 
 .placesList {
@@ -150,6 +166,13 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 768px) {
+  .placePhoto {
+    width: 60px;
+    height: 60px;
+  }
+}
+
 .placeInfo {
   flex: 1;
   min-width: 0;
@@ -160,6 +183,12 @@
   font-weight: 600;
   margin-bottom: 4px;
   color: #333;
+}
+
+@media (max-width: 768px) {
+  .placeName {
+    font-size: 16px;
+  }
 }
 
 .placeLocation {
@@ -176,6 +205,13 @@
 
 .statusBadge {
   font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .statusBadge {
+    font-size: 16px;
+  }
 }
 
 .expandIcon {
@@ -305,6 +341,13 @@
 .emptyState p:first-child {
   font-size: 64px;
   margin-bottom: 16px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .emptyState p:first-child {
+    font-size: 48px;
+  }
 }
 
 .emptyState h3 {
@@ -330,13 +373,19 @@
 }
 
 .categoryTag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: #fff3e0;
   color: #ff6f00;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .categoryTag.restaurant {
@@ -382,4 +431,21 @@
 .categoryTag.beach {
   background: #e0f7fa;
   color: #00838f;
+}
+
+.categoryTag > *:first-child {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .categoryTag {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+  
+  .categoryTag > *:first-child {
+    font-size: 12px;
+  }
 }
