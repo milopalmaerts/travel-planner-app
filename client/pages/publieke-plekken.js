@@ -6,7 +6,7 @@ import styles from '../styles/Plekken.module.css';
 
 export default function PubliekePlekken() {
   const router = useRouter();
-  const { places } = usePlaces();
+  const { demoUsers, user } = usePlaces();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('alle');
 
@@ -53,11 +53,17 @@ export default function PubliekePlekken() {
     return labels[category] || category;
   };
 
-  // Filter alleen publieke plekken
-  const publicPlaces = places.filter(place => place.isPublic);
+  // Verzamel alle publieke plekken van demo users (anderen)
+  const allOtherPlaces = demoUsers.flatMap(demoUser => 
+    (demoUser.places || []).map(place => ({
+      ...place,
+      ownerUsername: demoUser.username,
+      ownerId: demoUser.id,
+    }))
+  ).filter(place => place.isPublic);
 
   // Filter op zoekterm en categorie
-  const filteredPlaces = publicPlaces.filter(place => {
+  const filteredPlaces = allOtherPlaces.filter(place => {
     const matchesSearch = place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           place.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           place.country.toLowerCase().includes(searchQuery.toLowerCase());
@@ -144,6 +150,18 @@ export default function PubliekePlekken() {
                         <span className={`${styles.categoryTag} ${styles[place.category]}`}>
                           {getCategoryIcon(place.category)} {getCategoryLabel(place.category)}
                         </span>
+                        <div style={{ marginTop: '8px' }}>
+                          <span style={{ 
+                            fontSize: '12px', 
+                            color: '#17a2b8',
+                            background: '#e7f6f8',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontWeight: '600',
+                          }}>
+                            👤 {place.ownerUsername}
+                          </span>
+                        </div>
                         {place.description && (
                           <p style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
                             {place.description}
