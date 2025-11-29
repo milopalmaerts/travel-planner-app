@@ -19,12 +19,41 @@
   background: none;
   border: none;
   color: #999;
-  transition: color 0.2s;
+  transition: all 0.3s;
   padding: 8px 16px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.navItem::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(23, 162, 184, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.navItem:active::before {
+  width: 100px;
+  height: 100px;
+}
+
+.navItem:hover {
+  transform: scale(1.1);
 }
 
 .navItem.active {
   color: #17a2b8;
+}
+
+.navItem:active {
+  transform: scale(0.9);
 }
 
 .icon {

@@ -17,23 +17,69 @@ export default function Map() {
   // Helper function to get icon for category
   const getMarkerIcon = (category, visited, favorite) => {
     let color = '#17a2b8'; // default teal
-    if (favorite) color = '#dc3545'; // red for favorites
-    else if (visited) color = '#28a745'; // green for visited
-    else if (category === 'restaurant') color = '#ff6f00';
-    else if (category === 'cafe') color = '#7b1fa2';
-    else if (category === 'viewpoint') color = '#2e7d32';
-    else if (category === 'shopping') color = '#1976d2';
-    else if (category === 'museum') color = '#f57f17';
-    else if (category === 'park') color = '#2e7d32';
-    else if (category === 'hotel') color = '#c2185b';
-    else if (category === 'nightlife') color = '#6a1b9a';
-    else if (category === 'beach') color = '#00838f';
+    let emoji = '📍'; // default pin
+    
+    if (favorite) {
+      color = '#dc3545'; // red for favorites
+      emoji = '❤️';
+    } else if (visited) {
+      color = '#28a745'; // green for visited
+      emoji = '✔️';
+    } else if (category === 'restaurant') {
+      color = '#ff6f00';
+      emoji = '🍽️';
+    } else if (category === 'cafe') {
+      color = '#7b1fa2';
+      emoji = '☕';
+    } else if (category === 'viewpoint') {
+      color = '#2e7d32';
+      emoji = '👁️';
+    } else if (category === 'shopping') {
+      color = '#1976d2';
+      emoji = '🛍️';
+    } else if (category === 'museum') {
+      color = '#f57f17';
+      emoji = '🏛️';
+    } else if (category === 'park') {
+      color = '#2e7d32';
+      emoji = '🌳';
+    } else if (category === 'hotel') {
+      color = '#c2185b';
+      emoji = '🏨';
+    } else if (category === 'nightlife') {
+      color = '#6a1b9a';
+      emoji = '🎉';
+    } else if (category === 'beach') {
+      color = '#00838f';
+      emoji = '🏖️';
+    }
 
     return L.divIcon({
       className: 'custom-marker',
-      html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>`,
-      iconSize: [30, 30],
-      iconAnchor: [15, 15],
+      html: `
+        <div style="
+          background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
+          width: 40px;
+          height: 40px;
+          border-radius: 50% 50% 50% 0;
+          border: 3px solid white;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          transform: rotate(-45deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        ">
+          <span style="
+            transform: rotate(45deg);
+            font-size: 20px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+          ">${emoji}</span>
+        </div>
+      `,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
     });
   };
 

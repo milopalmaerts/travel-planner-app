@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import BottomNav from '../components/BottomNav';
 import { usePlaces } from '../contexts/PlacesContext';
 import styles from '../styles/Profiel.module.css';
 
 export default function Profiel() {
   const router = useRouter();
-  const { places, user, logout } = usePlaces();
+  const { places, user, logout, updateUserProfile } = usePlaces();
+  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
 
   const visitedCount = places.filter(p => p.visited).length;
   const favoritesCount = places.filter(p => p.favorite).length;
@@ -23,6 +25,18 @@ export default function Profiel() {
     router.push('/login');
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateUserProfile({ profilePhoto: reader.result });
+        setIsEditingPhoto(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -31,11 +45,40 @@ export default function Profiel() {
 
       <div className={styles.content}>
         <div className={styles.profileHeader}>
-          <div className={styles.avatar}>
-            <span className={styles.avatarIcon}>👤</span>
+          <div 
+            className={styles.avatar}
+            onClick={() => setIsEditingPhoto(true)}
+          >
+            {user?.profilePhoto ? (
+              <img 
+                src={user.profilePhoto} 
+                alt="Profile" 
+                className={styles.avatarImage}
+              />
+            ) : (
+              <span className={styles.avatarIcon}>👤</span>
+            )}
+            <div className={styles.avatarOverlay}>
+              <span>📷</span>
+            </div>
           </div>
-          <h2 className={styles.username}>milo_palmaerts</h2>
-          <p className={styles.email}>milo.palmaerts@gmail.com</p>
+          <input
+            type="file"
+            id="profilePhotoInput"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            style={{ display: 'none' }}
+          />
+          {isEditingPhoto && (
+            <button 
+              className={styles.uploadBtn}
+              onClick={() => document.getElementById('profilePhotoInput').click()}
+            >
+              📷 Foto uploaden
+            </button>
+          )}
+          <h2 className={styles.username}>{user?.username || 'milo_palmaerts'}</h2>
+          <p className={styles.email}>{user?.email || 'milo.palmaerts@gmail.com'}</p>
         </div>
 
         <div className={styles.statsGrid}>

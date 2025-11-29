@@ -78,8 +78,28 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s;
   box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.submitBtn:active::before {
+  width: 400px;
+  height: 400px;
 }
 
 .submitBtn:hover {
@@ -110,8 +130,29 @@
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #138496;
+  transition: width 0.3s;
 }
 
 .link:hover {
   color: #138496;
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+.link:active {
+  transform: scale(0.95);
 }

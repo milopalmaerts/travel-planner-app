@@ -65,6 +65,12 @@ export function PlacesProvider({ children }) {
     localStorage.setItem('travelUser', JSON.stringify(userData));
   };
 
+  const updateUserProfile = (updates) => {
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem('travelUser', JSON.stringify(updatedUser));
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('travelUser');
@@ -81,6 +87,7 @@ export function PlacesProvider({ children }) {
       toggleFavorite,
       login,
       logout,
+      updateUserProfile,
     }}>
       {children}
     </PlacesContext.Provider>
