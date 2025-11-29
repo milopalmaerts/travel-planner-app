@@ -95,7 +95,10 @@ export default function Profiel() {
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Over Travel Places</h3>
           
-          <button className={styles.menuItem}>
+          <button 
+            className={styles.menuItem}
+            onClick={() => router.push('/mijn-publieke-plekken')}
+          >
             <span className={styles.menuIcon}>🌐</span>
             <div className={styles.menuText}>
               <strong>Deel je plekken</strong>
@@ -103,7 +106,10 @@ export default function Profiel() {
             </div>
           </button>
 
-          <button className={styles.menuItem}>
+          <button 
+            className={styles.menuItem}
+            onClick={() => router.push('/publieke-plekken')}
+          >
             <span className={styles.menuIcon}>🗺️</span>
             <div className={styles.menuText}>
               <strong>Bekijk anderen hun plekken</strong>
